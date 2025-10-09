@@ -1,0 +1,1 @@
+curl -v -X POST -d '{"temperature_1":20}' https://dashboard.akiot.es/api/v1/9395/telemetry --header "Content-Type:application/json"

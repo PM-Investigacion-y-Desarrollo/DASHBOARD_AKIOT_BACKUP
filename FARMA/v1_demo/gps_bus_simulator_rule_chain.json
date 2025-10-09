@@ -1,0 +1,69 @@
+{
+  "ruleChain": {
+    "name": "GPS Bus Simulator",
+    "type": "CORE",
+    "firstRuleNodeId": null,
+    "root": false,
+    "debugMode": false,
+    "configuration": null,
+    "additionalInfo": {
+      "description": "Simulacion de Latitud y Longitud para Buses."
+    }
+  },
+  "metadata": {
+    "version": 4,
+    "firstNodeIndex": null,
+    "nodes": [
+      {
+        "type": "org.thingsboard.rule.engine.debug.TbMsgGeneratorNode",
+        "name": "BUS Simulator",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "msgCount": 10,
+          "periodInSeconds": 3600,
+          "scriptLang": "TBEL",
+          "jsScript": "// La latitud y longitud iniciales para el centro de Buenos Aires\r\n// Se usan si el dispositivo no tiene atributos de posición guardados.\r\nvar BUENOS_AIRES_CENTER_LAT = -34.6037;\r\nvar BUENOS_AIRES_CENTER_LON = -58.3816;\r\n\r\n// Máximo desplazamiento por actualización (simula velocidad)\r\nvar MAX_STEP = 0.001; // Aproximadamente 111 metros\r\n\r\n// -----------------------------------------------------------\r\n\r\n// 1. Obtener la última posición guardada en los atributos.\r\n// Si no existe, usa la posición central de CABA como punto de partida.\r\nvar currentLat = metadata.prevLat ? parseFloat(metadata.prevLat) : BUENOS_AIRES_CENTER_LAT;\r\nvar currentLon = metadata.prevLon ? parseFloat(metadata.prevLon) : BUENOS_AIRES_CENTER_LON;\r\n\r\n// 2. Calcular el desplazamiento aleatorio y progresivo (el \"movimiento\").\r\n// Genera un número entre -MAX_STEP y +MAX_STEP.\r\nvar latStep = (Math.random() * (MAX_STEP * 2)) - MAX_STEP;\r\nvar lonStep = (Math.random() * (MAX_STEP * 2)) - MAX_STEP;\r\n\r\n// 3. Aplicar el desplazamiento a la nueva posición.\r\nvar newLat = currentLat + latStep;\r\nvar newLon = currentLon + lonStep;\r\n\r\n// 4. Asegurarse de que el \"bus\" permanezca cerca del área de CABA (opcional, para realismo).\r\n// Estos límites son una aproximación a un área de CABA.\r\nvar CABA_NORTH_LIMIT = -34.50; \r\nvar CABA_SOUTH_LIMIT = -34.70;\r\nvar CABA_WEST_LIMIT = -58.55; \r\nvar CABA_EAST_LIMIT = -58.30; \r\n\r\nif (newLat > CABA_NORTH_LIMIT || newLat < CABA_SOUTH_LIMIT) {\r\n    newLat = currentLat - latStep; // Revertir si se sale del límite N/S\r\n}\r\nif (newLon > CABA_EAST_LIMIT || newLon < CABA_WEST_LIMIT) {\r\n    newLon = currentLon - lonStep; // Revertir si se sale del límite E/O\r\n}\r\n\r\n// 5. Crear el nuevo payload (msg) de telemetría GPS.\r\nvar newMsg = {\r\n    latitude: newLat.toFixed(6),\r\n    longitude: newLon.toFixed(6),\r\n    temp: msg.temp, // Mantiene la telemetría original\r\n    humidity: msg.humidity\r\n};\r\n\r\n// 6. Preparar los metadatos para guardar la nueva posición como atributo del dispositivo.\r\n// Esto es VITAL para que la próxima ejecución sepa dónde está el bus.\r\nvar newMetadata = {\r\n    deviceName: metadata.deviceName,\r\n    deviceType: metadata.deviceType,\r\n    prevLat: newLat.toFixed(6),\r\n    prevLon: newLon.toFixed(6)\r\n};\r\n\r\n// 7. Retornar el nuevo mensaje y metadatos.\r\n// Debes asegurarte de que el mensaje retornado sea procesado por un nodo 'save attributes'\r\n// para guardar 'prevLat' y 'prevLon' para la próxima ejecución.\r\nreturn { msg: newMsg, metadata: newMetadata, msgType: msgType };",
+          "tbelScript": "// Latitud: (-90) a 90\r\nvar randomLat = (Math.random() * 180) - 90;\r\n\r\n// Longitud: (-180) a 180\r\nvar randomLon = (Math.random() * 360) - 180;\r\n\r\n// Ejemplo de salida:\r\n// Latitud: 34.123456\r\n// Longitud: -118.765432\r\nvar msg = { latitude: randomLat, longitude: randomLon };\r\nvar metadata = { data: 40 };\r\nvar msgType = \"POST_TELEMETRY_REQUEST\";\r\n\r\nreturn { msg: msg, metadata: metadata, msgType: msgType };",
+          "originatorId": "a338d270-a085-11f0-ae09-016fadaf51b2",
+          "originatorType": "DEVICE"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 320,
+          "layoutY": 150
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgTimeseriesNode",
+        "name": "BUS Simualtor TimeSeries",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 1,
+        "configuration": {
+          "defaultTTL": 0,
+          "useServerTs": false,
+          "processingSettings": {
+            "type": "ON_EVERY_MESSAGE"
+          }
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 678,
+          "layoutY": 153
+        }
+      }
+    ],
+    "connections": [
+      {
+        "fromIndex": 0,
+        "toIndex": 1,
+        "type": "Success"
+      }
+    ],
+    "ruleChainConnections": null
+  }
+}

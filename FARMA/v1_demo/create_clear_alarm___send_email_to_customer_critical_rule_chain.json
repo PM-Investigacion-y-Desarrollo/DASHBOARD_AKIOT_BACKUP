@@ -1,0 +1,220 @@
+{
+  "ruleChain": {
+    "name": "Create/Clear Alarm & Send Email to Customer Critical",
+    "type": "CORE",
+    "firstRuleNodeId": null,
+    "root": false,
+    "debugMode": false,
+    "configuration": null,
+    "additionalInfo": {
+      "description": ""
+    }
+  },
+  "metadata": {
+    "version": 15,
+    "firstNodeIndex": 0,
+    "nodes": [
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbJsFilterNode",
+        "name": "Under Threshold",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "jsScript": "return msg.temperature_1 < -10 || msg.temperature_1 > 30;",
+          "tbelScript": null
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 283,
+          "layoutY": 149
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbCreateAlarmNode",
+        "name": "Create Alarm",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "alarmType": "Critical Temperature",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "severity": "CRITICAL",
+          "propagate": true
+        },
+        "additionalInfo": {
+          "layoutX": 1213,
+          "layoutY": 429
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbClearAlarmNode",
+        "name": "Clear Alarm",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "alarmType": "Critical Temperature",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;"
+        },
+        "additionalInfo": {
+          "layoutX": 579,
+          "layoutY": 59
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Add temperature to metadata",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "jsScript": "metadata.temperature_1 = msg.temperature_1;\nreturn {msg: msg, metadata: metadata, msgType: msgType};",
+          "tbelScript": null
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 862,
+          "layoutY": 417
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.mail.TbMsgToEmailNode",
+        "name": "Temperature Email",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "fromTemplate": "info@testmail.org",
+          "toTemplate": "${customerEmail}",
+          "ccTemplate": "hcorvalan@akribis.info",
+          "bccTemplate": null,
+          "subjectTemplate": "Dipositivo ${deviceType} Alarma Critica de temperatura",
+          "mailBodyType": null,
+          "bodyTemplate": "Gravedad de alarma: Critica.\nEl dipositivo ${deviceName} tiene un temperatura de : ${temperature_1} ºC. \nUbicacion del dispositivo ${ss_address}\nPor favor atender URGENTE el dispositivo."
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 1304,
+          "layoutY": 578
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.mail.TbSendEmailNode",
+        "name": "SendGrid SMTP",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "useSystemSmtpSettings": true,
+          "smtpProtocol": "smtp",
+          "smtpHost": "smtp.sendgrid.net",
+          "smtpPort": 25,
+          "timeout": 10000,
+          "enableTls": false,
+          "tlsVersion": null,
+          "enableProxy": null,
+          "proxyHost": null,
+          "proxyPort": null,
+          "proxyUser": null,
+          "proxyPassword": null,
+          "username": "apikey",
+          "password": "YOUR_API_PASSWORD"
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 1201,
+          "layoutY": 776
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.metadata.TbGetCustomerAttributeNode",
+        "name": "Get Customer Email",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "dataToFetch": "ATTRIBUTES",
+          "dataMapping": {
+            "email": "customerEmail"
+          },
+          "fetchTo": "METADATA",
+          "preserveOriginatorIfCustomer": true
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 330,
+          "layoutY": 368
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.metadata.TbGetAttributesNode",
+        "name": "Get Device Address",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 1,
+        "configuration": {
+          "clientAttributeNames": [],
+          "sharedAttributeNames": [],
+          "serverAttributeNames": [
+            "address"
+          ],
+          "latestTsKeyNames": [],
+          "fetchTo": "METADATA"
+        },
+        "additionalInfo": {
+          "layoutX": 592,
+          "layoutY": 418
+        }
+      }
+    ],
+    "connections": [
+      {
+        "fromIndex": 0,
+        "toIndex": 2,
+        "type": "False"
+      },
+      {
+        "fromIndex": 0,
+        "toIndex": 6,
+        "type": "True"
+      },
+      {
+        "fromIndex": 1,
+        "toIndex": 4,
+        "type": "Created"
+      },
+      {
+        "fromIndex": 3,
+        "toIndex": 1,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 4,
+        "toIndex": 5,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 7,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 7,
+        "toIndex": 3,
+        "type": "Success"
+      }
+    ],
+    "ruleChainConnections": null
+  }
+}

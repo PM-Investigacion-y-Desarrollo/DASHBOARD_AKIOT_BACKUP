@@ -1,0 +1,255 @@
+{
+  "ruleChain": {
+    "name": "Device Telemetry Emulators",
+    "type": "CORE",
+    "firstRuleNodeId": null,
+    "root": false,
+    "debugMode": false,
+    "configuration": null,
+    "additionalInfo": {
+      "description": ""
+    }
+  },
+  "metadata": {
+    "version": 30,
+    "firstNodeIndex": null,
+    "nodes": [
+      {
+        "type": "org.thingsboard.rule.engine.debug.TbMsgGeneratorNode",
+        "name": "AWS 0001",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "msgCount": 10000,
+          "periodInSeconds": 10,
+          "scriptLang": "TBEL",
+          "jsScript": "var msg = { temp: 42, humidity: 77 };\nvar metadata = { data: 40 };\nvar msgType = \"POST_TELEMETRY_REQUEST\";\n\nreturn { msg: msg, metadata: metadata, msgType: msgType };",
+          "tbelScript": "var temperature_1m = toFixed(Math.random() * 10 + 15, 2);       // 15 - 25 °C\r\nvar humidity_1m = toFixed(Math.random() * 40 + 40, 2);          // 40 - 80 %\r\nvar pressure_1m = toFixed(Math.random() * 20 + 1000, 2);        // 1000 - 1020 hPa\r\nvar windSpeed_1m = toFixed(Math.random() * 15, 2);              // 0 - 15 m/s\r\nvar windDirection_1m = toFixed(Math.random() * 360, 0);         // 0 - 360 grados\r\nvar radiation_1m = toFixed(Math.random() * 800 + 200, 2);       // 200 - 1000 W/m²\r\nvar precipitation_24h = toFixed(Math.random() * 50, 2);         // 0 - 50 mm en 24h\r\nvar batteryLevel_1m = toFixed(Math.random() * 24, 2); // 0 - 24 Voltios\r\n\r\nvar msg = {\r\n    temperature_1m: temperature_1m,\r\n    humidity_1m: humidity_1m,\r\n    pressure_1m: pressure_1m,\r\n    windSpeed_1m: windSpeed_1m,\r\n    windDirection_1m: windDirection_1m,\r\n    radiation_1m: radiation_1m,\r\n    precipitation_24h:precipitation_24h,\r\n    batteryLevel_1m: batteryLevel_1m\r\n};\r\n\r\nvar metadata = { data: 40 };\r\nvar msgType = \"POST_TELEMETRY_REQUEST\";\r\n\r\nreturn { msg: msg, metadata: metadata, msgType: msgType };\r\n",
+          "originatorId": "4fd777d0-9b08-11f0-ae09-016fadaf51b2",
+          "originatorType": "DEVICE"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 326,
+          "layoutY": 160
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.debug.TbMsgGeneratorNode",
+        "name": "AWS 0002",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "msgCount": 10,
+          "periodInSeconds": 1800,
+          "scriptLang": "TBEL",
+          "jsScript": "var msg = { temp: 42, humidity: 77 };\nvar metadata = { data: 40 };\nvar msgType = \"POST_TELEMETRY_REQUEST\";\n\nreturn { msg: msg, metadata: metadata, msgType: msgType };",
+          "tbelScript": "var temperature_1m = toFixed(Math.random() * 10 + 15, 2);       // 15 - 25 °C\r\nvar humidity_1m = toFixed(Math.random() * 40 + 40, 2);          // 40 - 80 %\r\nvar pressure_1m = toFixed(Math.random() * 20 + 1000, 2);        // 1000 - 1020 hPa\r\nvar windSpeed_1m = toFixed(Math.random() * 15, 2);              // 0 - 15 m/s\r\nvar windDirection_1m = toFixed(Math.random() * 360, 0);         // 0 - 360 grados\r\nvar radiation_1m = toFixed(Math.random() * 800 + 200, 2);       // 200 - 1000 W/m²\r\nvar precipitation_24h = toFixed(Math.random() * 50, 2);         // 0 - 50 mm en 24h\r\nvar batteryLevel_1m = toFixed(Math.random() * 24, 2); // 0 - 24 Voltios\r\n\r\nvar msg = {\r\n    temperature_1m: temperature_1m,\r\n    humidity_1m: humidity_1m,\r\n    pressure_1m: pressure_1m,\r\n    windSpeed_1m: windSpeed_1m,\r\n    windDirection_1m: windDirection_1m,\r\n    radiation_1m: radiation_1m,\r\n    precipitation_24h:precipitation_24h,\r\n    batteryLevel_1m: batteryLevel_1m\r\n};\r\n\r\nvar metadata = { data: 40 };\r\nvar msgType = \"POST_TELEMETRY_REQUEST\";\r\n\r\nreturn { msg: msg, metadata: metadata, msgType: msgType };\r\n",
+          "originatorId": "4fd777d6-9b08-11f0-ae09-016fadaf51b2",
+          "originatorType": "DEVICE"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 335,
+          "layoutY": 279
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.debug.TbMsgGeneratorNode",
+        "name": "AWS 0003",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "msgCount": 10,
+          "periodInSeconds": 1800,
+          "scriptLang": "TBEL",
+          "jsScript": "var msg = { temp: 42, humidity: 77 };\nvar metadata = { data: 40 };\nvar msgType = \"POST_TELEMETRY_REQUEST\";\n\nreturn { msg: msg, metadata: metadata, msgType: msgType };",
+          "tbelScript": "var temperature_1m = toFixed(Math.random() * 10 + 15, 2);       // 15 - 25 °C\r\nvar humidity_1m = toFixed(Math.random() * 40 + 40, 2);          // 40 - 80 %\r\nvar pressure_1m = toFixed(Math.random() * 20 + 1000, 2);        // 1000 - 1020 hPa\r\nvar windSpeed_1m = toFixed(Math.random() * 15, 2);              // 0 - 15 m/s\r\nvar windDirection_1m = toFixed(Math.random() * 360, 0);         // 0 - 360 grados\r\nvar radiation_1m = toFixed(Math.random() * 800 + 200, 2);       // 200 - 1000 W/m²\r\nvar precipitation_24h = toFixed(Math.random() * 50, 2);         // 0 - 50 mm en 24h\r\nvar batteryLevel_1m = toFixed(Math.random() * 24, 2); // 0 - 24 Voltios\r\n\r\nvar msg = {\r\n    temperature_1m: temperature_1m,\r\n    humidity_1m: humidity_1m,\r\n    pressure_1m: pressure_1m,\r\n    windSpeed_1m: windSpeed_1m,\r\n    windDirection_1m: windDirection_1m,\r\n    radiation_1m: radiation_1m,\r\n    precipitation_24h:precipitation_24h,\r\n    batteryLevel_1m: batteryLevel_1m\r\n};\r\n\r\nvar metadata = { data: 40 };\r\nvar msgType = \"POST_TELEMETRY_REQUEST\";\r\n\r\nreturn { msg: msg, metadata: metadata, msgType: msgType };\r\n",
+          "originatorId": "4fd777d9-9b08-11f0-ae09-016fadaf51b2",
+          "originatorType": "DEVICE"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 343,
+          "layoutY": 376
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgTimeseriesNode",
+        "name": "Save time series",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 1,
+        "configuration": {
+          "defaultTTL": 0,
+          "useServerTs": false,
+          "processingSettings": {
+            "type": "ON_EVERY_MESSAGE"
+          }
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 832,
+          "layoutY": 527
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.debug.TbMsgGeneratorNode",
+        "name": "AWS 0004",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "msgCount": 10,
+          "periodInSeconds": 1800,
+          "scriptLang": "TBEL",
+          "jsScript": "var msg = { temp: 42, humidity: 77 };\nvar metadata = { data: 40 };\nvar msgType = \"POST_TELEMETRY_REQUEST\";\n\nreturn { msg: msg, metadata: metadata, msgType: msgType };",
+          "tbelScript": "var temperature_1m = toFixed(Math.random() * 10 + 15, 2);       // 15 - 25 °C\r\nvar humidity_1m = toFixed(Math.random() * 40 + 40, 2);          // 40 - 80 %\r\nvar pressure_1m = toFixed(Math.random() * 20 + 1000, 2);        // 1000 - 1020 hPa\r\nvar windSpeed_1m = toFixed(Math.random() * 15, 2);              // 0 - 15 m/s\r\nvar windDirection_1m = toFixed(Math.random() * 360, 0);         // 0 - 360 grados\r\nvar radiation_1m = toFixed(Math.random() * 800 + 200, 2);       // 200 - 1000 W/m²\r\nvar precipitation_24h = toFixed(Math.random() * 50, 2);         // 0 - 50 mm en 24h\r\nvar batteryLevel_1m = toFixed(Math.random() * 24, 2); // 0 - 24 Voltios\r\n\r\nvar msg = {\r\n    temperature_1m: temperature_1m,\r\n    humidity_1m: humidity_1m,\r\n    pressure_1m: pressure_1m,\r\n    windSpeed_1m: windSpeed_1m,\r\n    windDirection_1m: windDirection_1m,\r\n    radiation_1m: radiation_1m,\r\n    precipitation_24h:precipitation_24h,\r\n    batteryLevel_1m: batteryLevel_1m\r\n};\r\n\r\nvar metadata = { data: 40 };\r\nvar msgType = \"POST_TELEMETRY_REQUEST\";\r\n\r\nreturn { msg: msg, metadata: metadata, msgType: msgType };\r\n",
+          "originatorId": "4fd777d1-9b08-11f0-ae09-016fadaf51b2",
+          "originatorType": "DEVICE"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 347,
+          "layoutY": 471
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.debug.TbMsgGeneratorNode",
+        "name": "AWS 0005",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "msgCount": 10,
+          "periodInSeconds": 1800,
+          "scriptLang": "TBEL",
+          "jsScript": "var msg = { temp: 42, humidity: 77 };\nvar metadata = { data: 40 };\nvar msgType = \"POST_TELEMETRY_REQUEST\";\n\nreturn { msg: msg, metadata: metadata, msgType: msgType };",
+          "tbelScript": "var temperature_1m = toFixed(Math.random() * 10 + 15, 2);       // 15 - 25 °C\r\nvar humidity_1m = toFixed(Math.random() * 40 + 40, 2);          // 40 - 80 %\r\nvar pressure_1m = toFixed(Math.random() * 20 + 1000, 2);        // 1000 - 1020 hPa\r\nvar windSpeed_1m = toFixed(Math.random() * 15, 2);              // 0 - 15 m/s\r\nvar windDirection_1m = toFixed(Math.random() * 360, 0);         // 0 - 360 grados\r\nvar radiation_1m = toFixed(Math.random() * 800 + 200, 2);       // 200 - 1000 W/m²\r\nvar precipitation_24h = toFixed(Math.random() * 50, 2);         // 0 - 50 mm en 24h\r\nvar batteryLevel_1m = toFixed(Math.random() * 24, 2); // 0 - 24 Voltios\r\n\r\nvar msg = {\r\n    temperature_1m: temperature_1m,\r\n    humidity_1m: humidity_1m,\r\n    pressure_1m: pressure_1m,\r\n    windSpeed_1m: windSpeed_1m,\r\n    windDirection_1m: windDirection_1m,\r\n    radiation_1m: radiation_1m,\r\n    precipitation_24h:precipitation_24h,\r\n    batteryLevel_1m: batteryLevel_1m\r\n};\r\n\r\nvar metadata = { data: 40 };\r\nvar msgType = \"POST_TELEMETRY_REQUEST\";\r\n\r\nreturn { msg: msg, metadata: metadata, msgType: msgType };\r\n",
+          "originatorId": "4fd777d8-9b08-11f0-ae09-016fadaf51b2",
+          "originatorType": "DEVICE"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 368,
+          "layoutY": 600
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.debug.TbMsgGeneratorNode",
+        "name": "AWS 0006",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "msgCount": 10,
+          "periodInSeconds": 1800,
+          "scriptLang": "TBEL",
+          "jsScript": "var msg = { temp: 42, humidity: 77 };\nvar metadata = { data: 40 };\nvar msgType = \"POST_TELEMETRY_REQUEST\";\n\nreturn { msg: msg, metadata: metadata, msgType: msgType };",
+          "tbelScript": "var temperature_1m = toFixed(Math.random() * 10 + 15, 2);       // 15 - 25 °C\r\nvar humidity_1m = toFixed(Math.random() * 40 + 40, 2);          // 40 - 80 %\r\nvar pressure_1m = toFixed(Math.random() * 20 + 1000, 2);        // 1000 - 1020 hPa\r\nvar windSpeed_1m = toFixed(Math.random() * 15, 2);              // 0 - 15 m/s\r\nvar windDirection_1m = toFixed(Math.random() * 360, 0);         // 0 - 360 grados\r\nvar radiation_1m = toFixed(Math.random() * 800 + 200, 2);       // 200 - 1000 W/m²\r\nvar precipitation_24h = toFixed(Math.random() * 50, 2);         // 0 - 50 mm en 24h\r\nvar batteryLevel_1m = toFixed(Math.random() * 24, 2); // 0 - 24 Voltios\r\nvar msg = {\r\n    temperature_1m: temperature_1m,\r\n    humidity_1m: humidity_1m,\r\n    pressure_1m: pressure_1m,\r\n    windSpeed_1m: windSpeed_1m,\r\n    windDirection_1m: windDirection_1m,\r\n    radiation_1m: radiation_1m,\r\n    precipitation_24h:precipitation_24h,\r\n    batteryLevel_1m: batteryLevel_1m\r\n};\r\n\r\nvar metadata = { data: 40 };\r\nvar msgType = \"POST_TELEMETRY_REQUEST\";\r\n\r\nreturn { msg: msg, metadata: metadata, msgType: msgType };\r\n",
+          "originatorId": "4fd777d2-9b08-11f0-ae09-016fadaf51b2",
+          "originatorType": "DEVICE"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 371,
+          "layoutY": 688
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.debug.TbMsgGeneratorNode",
+        "name": "AWS 0007",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "msgCount": 10,
+          "periodInSeconds": 1800,
+          "scriptLang": "TBEL",
+          "jsScript": "var msg = { temp: 42, humidity: 77 };\nvar metadata = { data: 40 };\nvar msgType = \"POST_TELEMETRY_REQUEST\";\n\nreturn { msg: msg, metadata: metadata, msgType: msgType };",
+          "tbelScript": "var temperature_1m = toFixed(Math.random() * 10 + 15, 2);       // 15 - 25 °C\r\nvar humidity_1m = toFixed(Math.random() * 40 + 40, 2);          // 40 - 80 %\r\nvar pressure_1m = toFixed(Math.random() * 20 + 1000, 2);        // 1000 - 1020 hPa\r\nvar windSpeed_1m = toFixed(Math.random() * 15, 2);              // 0 - 15 m/s\r\nvar windDirection_1m = toFixed(Math.random() * 360, 0);         // 0 - 360 grados\r\nvar radiation_1m = toFixed(Math.random() * 800 + 200, 2);       // 200 - 1000 W/m²\r\nvar precipitation_24h = toFixed(Math.random() * 50, 2);         // 0 - 50 mm en 24h\r\nvar batteryLevel_1m = toFixed(Math.random() * 24, 2); // 0 - 24 Voltios\r\n\r\nvar msg = {\r\n    temperature_1m: temperature_1m,\r\n    humidity_1m: humidity_1m,\r\n    pressure_1m: pressure_1m,\r\n    windSpeed_1m: windSpeed_1m,\r\n    windDirection_1m: windDirection_1m,\r\n    radiation_1m: radiation_1m,\r\n    precipitation_24h:precipitation_24h,\r\n    batteryLevel_1m: batteryLevel_1m\r\n};\r\n\r\nvar metadata = { data: 40 };\r\nvar msgType = \"POST_TELEMETRY_REQUEST\";\r\n\r\nreturn { msg: msg, metadata: metadata, msgType: msgType };\r\n",
+          "originatorId": "4fd777d5-9b08-11f0-ae09-016fadaf51b2",
+          "originatorType": "DEVICE"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 389,
+          "layoutY": 801
+        }
+      }
+    ],
+    "connections": [
+      {
+        "fromIndex": 0,
+        "toIndex": 3,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 1,
+        "toIndex": 3,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 2,
+        "toIndex": 3,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 4,
+        "toIndex": 3,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 5,
+        "toIndex": 3,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 3,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 7,
+        "toIndex": 3,
+        "type": "Success"
+      }
+    ],
+    "ruleChainConnections": null
+  }
+}
