@@ -1,0 +1,901 @@
+{
+  "ruleChain": {
+    "name": "Create/Clear Alarm & Send Email and telegram to Customer Critical",
+    "type": "CORE",
+    "firstRuleNodeId": null,
+    "root": false,
+    "debugMode": false,
+    "configuration": null,
+    "additionalInfo": {
+      "description": ""
+    }
+  },
+  "metadata": {
+    "version": 64,
+    "firstNodeIndex": 9,
+    "nodes": [
+      {
+        "type": "org.thingsboard.rule.engine.action.TbCreateAlarmNode",
+        "name": "Create Alarm",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "alarmDetailsBuildTbel": null,
+          "useMessageAlarmData": false,
+          "overwriteAlarmDetails": true,
+          "alarmType": "Critical Temperature",
+          "severity": "CRITICAL",
+          "propagate": true,
+          "relationTypes": null,
+          "propagateToOwner": null,
+          "propagateToOwnerHierarchy": null,
+          "propagateToTenant": null,
+          "dynamicSeverity": null
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 1450,
+          "layoutY": 142
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbClearAlarmNode",
+        "name": "Clear Alarm",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "alarmDetailsBuildTbel": null,
+          "alarmType": "Critical Temperature"
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 573,
+          "layoutY": 39
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Add temperature to metadata",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "jsScript": "metadata.temperature_1 = msg.temperature_1;\nreturn {msg: msg, metadata: metadata, msgType: msgType};",
+          "tbelScript": null
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 1189,
+          "layoutY": 152
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.mail.TbMsgToEmailNode",
+        "name": "Temperature Email",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "fromTemplate": "info@testmail.org",
+          "toTemplate": "${customerEmail}",
+          "ccTemplate": "",
+          "bccTemplate": null,
+          "subjectTemplate": "Dipositivo ${deviceType} Alarma Critica de temperatura",
+          "mailBodyType": null,
+          "bodyTemplate": "Gravedad de alarma: Critica.\nEl dipositivo ${deviceName} tiene un temperatura de : ${temperature_1} ºC. \nUbicacion del dispositivo ${ss_address}\nPor favor atender URGENTE el dispositivo."
+        },
+        "additionalInfo": {
+          "description": "En To cambiar a ${customerEmail} para que tome el email del usuario asignado.",
+          "layoutX": 1765,
+          "layoutY": 192
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.mail.TbSendEmailNode",
+        "name": "SendGrid SMTP",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "useSystemSmtpSettings": true,
+          "smtpProtocol": "smtp",
+          "smtpHost": "smtp.sendgrid.net",
+          "smtpPort": 25,
+          "timeout": 10000,
+          "enableTls": false,
+          "tlsVersion": null,
+          "enableProxy": null,
+          "proxyHost": null,
+          "proxyPort": null,
+          "proxyUser": null,
+          "proxyPassword": null,
+          "username": "apikey",
+          "password": "YOUR_API_PASSWORD"
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 2077,
+          "layoutY": 200
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.metadata.TbGetAttributesNode",
+        "name": "Get Device Address",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 1,
+        "configuration": {
+          "clientAttributeNames": [],
+          "sharedAttributeNames": [],
+          "serverAttributeNames": [
+            "address"
+          ],
+          "latestTsKeyNames": [],
+          "fetchTo": "METADATA"
+        },
+        "additionalInfo": {
+          "layoutX": 863,
+          "layoutY": 164
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.mail.TbMsgToEmailNode",
+        "name": "Battery Level Email",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "fromTemplate": "info@testmail.org",
+          "toTemplate": "${customerEmail}",
+          "ccTemplate": "",
+          "bccTemplate": null,
+          "subjectTemplate": "Dipositivo ${deviceType} Alarma Critica de batería",
+          "mailBodyType": null,
+          "bodyTemplate": "Gravedad de alarma: Critica.\nEl dipositivo ${deviceName} tiene un nivel de bateria : ${min_battery_voltage} mV. \nUbicacion del dispositivo ${ss_address}\nPor favor atender la bateria del dispositivo urgente."
+        },
+        "additionalInfo": {
+          "description": "En To cambiar a ${customerEmail} para que tome el email del usuario asignado.",
+          "layoutX": 1659,
+          "layoutY": 1036
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbCreateAlarmNode",
+        "name": "Create Alarm Battery",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "alarmDetailsBuildTbel": null,
+          "useMessageAlarmData": false,
+          "overwriteAlarmDetails": true,
+          "alarmType": "Critical Battery",
+          "severity": "CRITICAL",
+          "propagate": true,
+          "relationTypes": null,
+          "propagateToOwner": null,
+          "propagateToOwnerHierarchy": null,
+          "propagateToTenant": null,
+          "dynamicSeverity": null
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 1396,
+          "layoutY": 895
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbClearAlarmNode",
+        "name": "Clear Alarm battery",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "alarmDetailsBuildTbel": null,
+          "alarmType": "Critical Battery"
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 594,
+          "layoutY": 647
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbJsSwitchNode",
+        "name": "Varias alarmas",
+        "debugSettings": null,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "jsScript": "var branches = [];\r\n\r\n// --- Temperatura ---\r\nvar t = msg.temperature_1;\r\nif (t > 30) {\r\n    branches.push('High_t');\r\n} else if (t >= 25 && t <= 30) {\r\n    branches.push('Normal_t');\r\n} else if (t < 25) { // Se utilza para condicion de borrado\r\n    branches.push('Low_t');\r\n}\r\n\r\n// --- Batería ---\r\nvar bt = msg.min_battery_voltage;\r\nif (bt < 3300) {\r\n    branches.push('Low_bt');\r\n} else if (bt >= 3300 && bt < 3400) {\r\n    branches.push('Normal_bt');\r\n} else if (bt >= 3400) {\r\n    branches.push('High_bt');\r\n}\r\n\r\n// devolver todas las ramas activas\r\nreturn branches;\r\n",
+          "tbelScript": "function nextRelation(metadata, msg) {\n    return ['one','nine'];\n}\nif(msgType == 'POST_TELEMETRY_REQUEST') {\n    return ['two'];\n}\nreturn nextRelation(metadata, msg);"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 278,
+          "layoutY": 314
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.metadata.TbGetAttributesNode",
+        "name": "Get Device Address",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 1,
+        "configuration": {
+          "clientAttributeNames": [],
+          "sharedAttributeNames": [],
+          "serverAttributeNames": [
+            "address"
+          ],
+          "latestTsKeyNames": [],
+          "fetchTo": "METADATA"
+        },
+        "additionalInfo": {
+          "layoutX": 777,
+          "layoutY": 896
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Add battery level to metadata",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "jsScript": "metadata.min_battery_voltage = msg.min_battery_voltage;\nreturn {msg: msg, metadata: metadata, msgType: msgType};",
+          "tbelScript": null
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 1081,
+          "layoutY": 899
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.mail.TbSendEmailNode",
+        "name": "SendGrid SMTP",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "useSystemSmtpSettings": true,
+          "smtpProtocol": "smtp",
+          "smtpHost": "smtp.sendgrid.net",
+          "smtpPort": 25,
+          "timeout": 10000,
+          "enableTls": false,
+          "tlsVersion": null,
+          "enableProxy": null,
+          "proxyHost": null,
+          "proxyPort": null,
+          "proxyUser": null,
+          "proxyPassword": null,
+          "username": "apikey",
+          "password": "YOUR_API_PASSWORD"
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 2036,
+          "layoutY": 1041
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "New telegram message",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "jsScript": "var newMsg ={};\nvar nivel =\"Crítica\";\n// newMsg.text = '\"' +  msg.name + '\"' + \" alarm was created for device: \" + '\"' + metadata.deviceName + '\"';\nnewMsg.text =   \"Gravedad de alarma: \" + nivel + \"\\n\" +\n                \"El dipositivo \" + metadata.deviceName + \" tiene una temperatura de: \" + metadata.temperature_1 + \" ºC. \\n\" +\n                \"Ubicacion del dispositivo: \" + metadata.ss_address + \"\\n\" +\n                \"Por favor atender URGENTE el dispositivo.\";\n// El dispositivo ${metadata.deviceName} tiene una temperatura de: ${msg.temperature_1}      \n// Ubicación del dispositivo \n// Por favor atender URGENTE el dispositivo.`;\n\n// newMsg.chat_id = -4699590904; //has to be replaced by the actual chat id\nnewMsg.chat_id = metadata.customerChatId; //has to be replaced by the actual chat id\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};\n\n//return {msg: msg, metadata: metadata, msgType: msgType};",
+          "tbelScript": "var newMsg ={};\nnewMsg.text = '\"' +  msg.name + '\"' + \" alarm was created for device: \" + '\"' + metadata.deviceName + '\"';\nnewMsg.chat_id = -4958490460; //has to be replaced by the actual chat id\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};\n// return {msg: msg, metadata: metadata, msgType: msgType};"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1740,
+          "layoutY": 23
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.rest.TbRestApiCallNode",
+        "name": "REST API telegram call",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 3,
+        "configuration": {
+          "restEndpointUrlPattern": "https://api.telegram.org/bot${customerTokenTelegram}/sendMessage",
+          "requestMethod": "POST",
+          "useSimpleClientHttpFactory": false,
+          "parseToPlainText": false,
+          "ignoreRequestBody": false,
+          "enableProxy": false,
+          "useSystemProxyProperties": false,
+          "proxyScheme": null,
+          "proxyHost": null,
+          "proxyPort": 0,
+          "proxyUser": null,
+          "proxyPassword": null,
+          "readTimeoutMs": 0,
+          "maxParallelRequestsCount": 0,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "credentials": {
+            "type": "anonymous"
+          },
+          "maxInMemoryBufferSizeInKb": 256
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 2081,
+          "layoutY": 23
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "New telegram message",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "jsScript": "var newMsg ={};\nvar nivel =\"Crítica\";\n// newMsg.text = '\"' +  msg.name + '\"' + \" alarm was created for device: \" + '\"' + metadata.deviceName + '\"';\nnewMsg.text =   \"Gravedad de alarma: \" + nivel + \"\\n\" +\n                \"El dipositivo \" + metadata.deviceName + \" tiene un nivel de bateria de: \" + metadata.min_battery_voltage + \" mV. \\n\" +\n                \"Ubicacion del dispositivo: \" + metadata.ss_address + \"\\n\" +\n                \"Por favor atender URGENTE el dispositivo.\";\n\nnewMsg.chat_id = metadata.customerChatId; //has to be replaced by the actual chat id\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};\n\n//return {msg: msg, metadata: metadata, msgType: msgType};",
+          "tbelScript": "var newMsg ={};\nnewMsg.text = '\"' +  msg.name + '\"' + \" alarm was created for device: \" + '\"' + metadata.deviceName + '\"';\nnewMsg.chat_id = -4958490460; //has to be replaced by the actual chat id\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};\n// return {msg: msg, metadata: metadata, msgType: msgType};"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1633,
+          "layoutY": 778
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.rest.TbRestApiCallNode",
+        "name": "REST API telegram call",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 3,
+        "configuration": {
+          "restEndpointUrlPattern": "https://api.telegram.org/bot${customerTokenTelegram}/sendMessage",
+          "requestMethod": "POST",
+          "useSimpleClientHttpFactory": false,
+          "parseToPlainText": false,
+          "ignoreRequestBody": false,
+          "enableProxy": false,
+          "useSystemProxyProperties": false,
+          "proxyScheme": null,
+          "proxyHost": null,
+          "proxyPort": 0,
+          "proxyUser": null,
+          "proxyPassword": null,
+          "readTimeoutMs": 0,
+          "maxParallelRequestsCount": 0,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "credentials": {
+            "type": "anonymous"
+          },
+          "maxInMemoryBufferSizeInKb": 256
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 2043,
+          "layoutY": 780
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbCreateAlarmNode",
+        "name": "Create Alarm",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "alarmDetailsBuildTbel": null,
+          "useMessageAlarmData": false,
+          "overwriteAlarmDetails": true,
+          "alarmType": "Mayor temperature",
+          "severity": "MAJOR",
+          "propagate": true,
+          "relationTypes": null,
+          "propagateToOwner": null,
+          "propagateToOwnerHierarchy": null,
+          "propagateToTenant": null,
+          "dynamicSeverity": null
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 1494,
+          "layoutY": 404
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Add temperature to metadata",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "jsScript": "metadata.temperature_1 = msg.temperature_1;\nreturn {msg: msg, metadata: metadata, msgType: msgType};",
+          "tbelScript": null
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 1200,
+          "layoutY": 406
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.mail.TbMsgToEmailNode",
+        "name": "Temperature Email",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "fromTemplate": "info@testmail.org",
+          "toTemplate": "${customerEmail}",
+          "ccTemplate": "",
+          "bccTemplate": null,
+          "subjectTemplate": "Dipositivo ${deviceType} Alarma Intermedia de temperatura",
+          "mailBodyType": null,
+          "bodyTemplate": "Gravedad de alarma: Intermedia.\nEl dipositivo ${deviceName} tiene un temperatura de : ${temperature_1} ºC. \nUbicacion del dispositivo ${ss_address}\nNo es urgente, pero monitorear el dispositivo."
+        },
+        "additionalInfo": {
+          "description": "En To cambiar a ${customerEmail} para que tome el email del usuario asignado.",
+          "layoutX": 1775,
+          "layoutY": 490
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.mail.TbSendEmailNode",
+        "name": "SendGrid SMTP",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "useSystemSmtpSettings": true,
+          "smtpProtocol": "smtp",
+          "smtpHost": "smtp.sendgrid.net",
+          "smtpPort": 25,
+          "timeout": 10000,
+          "enableTls": false,
+          "tlsVersion": null,
+          "enableProxy": null,
+          "proxyHost": null,
+          "proxyPort": null,
+          "proxyUser": null,
+          "proxyPassword": null,
+          "username": "apikey",
+          "password": "YOUR_API_PASSWORD"
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 2112,
+          "layoutY": 500
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.metadata.TbGetCustomerAttributeNode",
+        "name": "Get Customer Email",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "dataToFetch": "ATTRIBUTES",
+          "dataMapping": {
+            "email": "customerEmail",
+            "chat_id": "customerChatId",
+            "token_telegram": "customerTokenTelegram"
+          },
+          "fetchTo": "METADATA",
+          "preserveOriginatorIfCustomer": true
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 605,
+          "layoutY": 395
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.metadata.TbGetAttributesNode",
+        "name": "Get Device Address",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 1,
+        "configuration": {
+          "clientAttributeNames": [],
+          "sharedAttributeNames": [],
+          "serverAttributeNames": [
+            "address"
+          ],
+          "latestTsKeyNames": [],
+          "fetchTo": "METADATA"
+        },
+        "additionalInfo": {
+          "layoutX": 883,
+          "layoutY": 397
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "New telegram message",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "jsScript": "var newMsg ={};\nvar nivel =\"Intermedia\";\n// newMsg.text = '\"' +  msg.name + '\"' + \" alarm was created for device: \" + '\"' + metadata.deviceName + '\"';\nnewMsg.text =   \"Gravedad de alarma: \" + nivel + \"\\n\" +\n                \"El dipositivo \" + metadata.deviceName + \" tiene una temperatura de: \" + metadata.temperature_1 + \" ºC. \\n\" +\n                \"Ubicacion del dispositivo: \" + metadata.ss_address + \"\\n\" +\n                \"No es urgente, pero monitorear el dispositivo.\";\n\nnewMsg.chat_id = metadata.customerChatId; //has to be replaced by the actual chat id\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};",
+          "tbelScript": "var newMsg ={};\nnewMsg.text = '\"' +  msg.name + '\"' + \" alarm was created for device: \" + '\"' + metadata.deviceName + '\"';\nnewMsg.chat_id = -4958490460; //has to be replaced by the actual chat id\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};\n// return {msg: msg, metadata: metadata, msgType: msgType};"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1777,
+          "layoutY": 344
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.rest.TbRestApiCallNode",
+        "name": "REST API telegram call",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 3,
+        "configuration": {
+          "restEndpointUrlPattern": "https://api.telegram.org/bot${customerTokenTelegram}/sendMessage",
+          "requestMethod": "POST",
+          "useSimpleClientHttpFactory": false,
+          "parseToPlainText": false,
+          "ignoreRequestBody": false,
+          "enableProxy": false,
+          "useSystemProxyProperties": false,
+          "proxyScheme": null,
+          "proxyHost": null,
+          "proxyPort": 0,
+          "proxyUser": null,
+          "proxyPassword": null,
+          "readTimeoutMs": 0,
+          "maxParallelRequestsCount": 0,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "credentials": {
+            "type": "anonymous"
+          },
+          "maxInMemoryBufferSizeInKb": 256
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 2118,
+          "layoutY": 344
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbClearAlarmNode",
+        "name": "Clear Alarm",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "alarmDetailsBuildTbel": null,
+          "alarmType": "Mayor temperature"
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 603,
+          "layoutY": 301
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.metadata.TbGetCustomerAttributeNode",
+        "name": "Get Customer Email",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "dataToFetch": "ATTRIBUTES",
+          "dataMapping": {
+            "email": "customerEmail",
+            "chat_id": "customerChatId",
+            "token_telegram": "customerTokenTelegram"
+          },
+          "fetchTo": "METADATA",
+          "preserveOriginatorIfCustomer": true
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 581,
+          "layoutY": 176
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.metadata.TbGetCustomerAttributeNode",
+        "name": "Get Customer Email",
+        "debugSettings": {
+          "failuresEnabled": false,
+          "allEnabled": false,
+          "allEnabledUntil": 0
+        },
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "dataToFetch": "ATTRIBUTES",
+          "dataMapping": {
+            "email": "customerEmail",
+            "chat_id": "customerChatId",
+            "token_telegram": "customerTokenTelegram"
+          },
+          "fetchTo": "METADATA",
+          "preserveOriginatorIfCustomer": true
+        },
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 462,
+          "layoutY": 896
+        }
+      }
+    ],
+    "connections": [
+      {
+        "fromIndex": 0,
+        "toIndex": 3,
+        "type": "Created"
+      },
+      {
+        "fromIndex": 0,
+        "toIndex": 13,
+        "type": "Created"
+      },
+      {
+        "fromIndex": 2,
+        "toIndex": 0,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 3,
+        "toIndex": 4,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 5,
+        "toIndex": 2,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 12,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 7,
+        "toIndex": 6,
+        "type": "Created"
+      },
+      {
+        "fromIndex": 7,
+        "toIndex": 15,
+        "type": "Created"
+      },
+      {
+        "fromIndex": 9,
+        "toIndex": 1,
+        "type": "Low_t"
+      },
+      {
+        "fromIndex": 9,
+        "toIndex": 8,
+        "type": "High_bt"
+      },
+      {
+        "fromIndex": 9,
+        "toIndex": 21,
+        "type": "Normal_t"
+      },
+      {
+        "fromIndex": 9,
+        "toIndex": 25,
+        "type": "Low_t"
+      },
+      {
+        "fromIndex": 9,
+        "toIndex": 26,
+        "type": "High_t"
+      },
+      {
+        "fromIndex": 9,
+        "toIndex": 27,
+        "type": "Low_bt"
+      },
+      {
+        "fromIndex": 10,
+        "toIndex": 11,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 11,
+        "toIndex": 7,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 13,
+        "toIndex": 14,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 15,
+        "toIndex": 16,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 17,
+        "toIndex": 19,
+        "type": "Created"
+      },
+      {
+        "fromIndex": 17,
+        "toIndex": 23,
+        "type": "Created"
+      },
+      {
+        "fromIndex": 18,
+        "toIndex": 17,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 19,
+        "toIndex": 20,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 21,
+        "toIndex": 22,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 22,
+        "toIndex": 18,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 23,
+        "toIndex": 24,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 26,
+        "toIndex": 5,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 27,
+        "toIndex": 10,
+        "type": "Success"
+      }
+    ],
+    "ruleChainConnections": null
+  }
+}
